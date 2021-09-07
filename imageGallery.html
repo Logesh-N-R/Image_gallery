@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+        .top-panel{
+            margin: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+        .top-panel p{
+            cursor: pointer;
+        }
+
+    .toggleMenu{
+        display: flex;
+        flex-direction: row;
+    }
+    .toggleMenu p{
+        padding-right:10px ;
+    }
+    .gridMenu{
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+        margin: 0 auto;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .gridElement{
+        border: 1px solid black;
+        margin: 10px 0px;
+        text-align: center;
+        padding: 10px;
+        width: 22%;
+        border-radius: 10px;
+        background-color: #cec7cd;
+    }
+    .gridElement h3{
+        padding:0 0 15px 0;
+    }
+
+    .gridElement img{
+        border-radius: 4px;
+        min-width: 120px;
+        max-width:190px;
+        max-height: 190px;
+    }
+    .gridImgCont{
+        display: flex;
+        width: 200px;
+        height: 200px;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+    }
+    .tableCont{
+        display: none;
+    }
+    .table{
+        width: 90%;
+        margin: 10px auto;
+        border-spacing:0px 10px;
+    }
+
+    th{
+        background-color: orange;
+        padding:10px;
+        text-align: left;
+    }
+    td{
+        height: 150px;
+        padding: 10px;
+        border: 1px solid black;
+    }
+    .tableImage{
+        border-right:none ;
+        text-align: center;
+
+    }
+    .tablePic{
+        max-width: 150px;
+        max-height: 150px;
+
+    }
+    .tableNameCont{
+        border-right: none;
+        border-left: none;
+
+    }
+    .tableDesCont{
+        border-left: none;
+
+    }
+
+
+
+    </style>
+</head>
+
+<body>
+    <div class="top-panel">
+        <input type="text" class="search" placeholder="Search">
+        <div class="toggleMenu">
+            <p id="grid">Grid View</p>
+            <p>|</p>
+            <p id="table">Tablle View</p>
+        </div>
+    </div>
+    <div class="gridMenu">
+        <div class="gridElement">
+            <div class="gridImgCont">
+                <img src="http://picsum.photos/508/505?random=78" alt="loki" class="gridPic">
+            </div>
+            <h3 class="gridName">Amaranthus caudatus</h3>
+            <p class="gridDes">Lorem Ipsum is simply dummy text of the print</p>
+        </div>
+    </div>
+    <div class="tableCont">
+        <table class="table">
+            <tr>
+                <th style="width:20%">Image</th>
+                <th style="width:25%">Name</th>
+                <th style="width:55%">Description</th>
+            </tr>
+            <tr class="tableContent">
+                <td class="tableImage">
+                    <div class="tableImgCont">
+                        <img src="http://picsum.photos/508/505?random=78" alt="" class="tablePic">
+                    </div>
+                </td>
+                <td class="tableNameCont">
+                    <h3 class="tableName">maranthus caudatus</h3>
+                </td>
+                <td class="tableDesCont">
+                    <p class="tableDes">Lorem Ipsum is simply dummy text of the print</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#grid").click(function() {
+            if ($(".gridMenu").is(":visible")) {
+                $(".tableCont").hide();
+            } else {
+                $(".gridMenu").show();
+                $(".tableCont").hide();
+            }
+        })
+        $("#table").click(function() {
+            if ($(".tableCont").is(":visible")) {
+                $(".gridMenu").hide();
+            } else {
+                $(".tableCont").show();
+                $(".gridMenu").hide();
+            }
+        })
+        $.ajax({
+            url: "http://run.mocky.io/v3/6f7a76ed-d6f5-4b54-be23-bf9a141c982a",
+            dataType: "json",
+            success: function(json) {
+                array = json;
+                var length = array.length;
+
+                var tableEle = $('.tableContent');
+                var gridEle = $('.gridElement');
+                for (i = 0; i <= length; i++) {
+                    copytable = tableEle.clone()
+                    copygrid = gridEle.clone()
+                    var imgPath = array[i].image;
+                    var name = array[i].name;
+                    var des = array[i].description;
+                    copygrid.find('img').attr("src", imgPath);
+                    copygrid.find('h3').html(name);
+                    copygrid.find('p').html(des);
+                    $(copygrid).appendTo('.gridMenu');
+
+
+                    copytable.find('img').attr("src", imgPath);
+                    copytable.find('h3').html(name);
+                    copytable.find('p').html(des);
+                    $(copytable).appendTo('.table');
+
+                }
+            }
+        });
+        $(".search").keyup(function() {
+            var searchInput = $('.search').val().toUpperCase();
+            var length = array.length;
+            for (i = 0; i <= length; i++) {
+                var value = $('.gridName').eq(i).html().toUpperCase();
+                var value1 = $('.tableName').eq(i).html().toUpperCase();
+                if (value.indexOf(searchInput) > -1) {
+                    $('.gridElement').eq(i).show();
+                } else {
+                    $('.gridElement').eq(i).hide();
+                }
+                if (value1.indexOf(searchInput) > -1) {
+                    $('.tableContent').eq(i).show();
+                } else {
+                    $('.tableContent').eq(i).hide();
+                }
+
+            }
+        })
+
+
+
+
+
+    })
+    </script>
+</body>
+
+</html>
